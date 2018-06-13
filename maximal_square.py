@@ -1,4 +1,4 @@
-# Challenge
+# Challenge - HARD
 # Using the Python language, have the function MaximalSquare(strArr) take the
 # strArr parameter being passed which will be a 2D matrix of 0 and 1's, and
 # determine the area of the largest square submatrix that contains all 1's.
@@ -28,40 +28,61 @@
 
 
 def maximal_square(*args):
-    # parse string to array
-    array = [arg for arg in args]
-    # return array
-# complete search for each cell looking clockwise from search cell
+    """
+    To find the largest sub-matrix comprised completely of 1's we will set up search
+    coordinates and complete a search for each cell using these 'neighbour' coordinates
 
-# generate search matrix
-    search = []
-    size = 3
-    for i in range(size):
-        for j in range(size):
-            search.append((i, j))
-    # print(search)
-    # start top left [0][0]
+    :param args: matrix contents
+    :return: area of largest sub-matrix of 1's
+    """
+    array = [arg for arg in args]  # parse string to array
+    print(f"{'array':-^9}")
     for item in array:
         print(" ".join(item))
-    area = 0
+    print()
+    # generate the search matrix
 
-    print(f"search = {search}")  # coordinates of search area/cells
-    for row in range(len(array) - size + 1):
-        # print(f"row {row} = {array[row]}")
-        for cell in range(len(array) - size + 1):
-            # print(f"cell {cell} = {array[row][cell]}")
-            local = []
-            for neighbour in search:
-                # print(f"search for row {row} cell {cell} is {row + neighbour[0], cell + neighbour[1]} "
-                #       f"returns {array[row + neighbour[0]][cell + neighbour[1]]}")
-                local.append(array[row + neighbour[0]][cell + neighbour[1]])
-            # print(local) # this is the contents of the searched cells
-            if all(x == "1" for x in local):
-                print(size)
-                area = size * size
-    return area
+    # TODO not sure about this size variable.
+    # need to start by searching for a submatrix = size of matrix
+    # then to reduce the submatrix search size each iteration until
+    # max submatrix size is found
+    # need to deal with the case of non-square matrix/array
+    size = min(len(array), len(array[0]))
 
+    while True:
+        area = 0
+        search = []
 
-print(maximal_square("0111", "1111", "1111", "1111"))
-# print(maximal_square("0111", "1101", "0111"))
+        if area > 0:
+            return area
+        else:
+            for i in range(size):
+                for j in range(size):
+                    search.append((i, j))
+            print(f"search = {search}")  # coordinates of search area/cells
+            print()
+            print("*" * 60)
+            print(f"size = {size}")
+            # start searching from each cell starting at top left [0][0]
+            for row in range(len(array) - size + 1):
+                # print(f"row {row} = {array[row]}")  # TODO delete line
+                for cell in range(len(array[row]) - size + 1):
+                    local = []
+                    for neighbour in search:
+                        print(f"search for row {row} cell {cell} is {row + neighbour[0], cell + neighbour[1]} "
+                              f"returns {array[row + neighbour[0]][cell + neighbour[1]]}")
+                        local.append(array[row + neighbour[0]][cell + neighbour[1]])
+                    print()
+                    print(f"local = {local}")  # this is the contents of the searched cells TODO delete line
+                    print()
+                    if all(x == "1" for x in local):
+                        area = size * size
+                        return f"Area = {area}"
+            size -= 1
 
+# print(maximal_square("101", "011", "011", "101"))  # 4: rectangular matrix
+# print(maximal_square("111", "111", "111"))  # 9
+# print(maximal_square("1111", "1111", "1111", "1111"))  # 16
+# print(maximal_square("0111", "1111", "1111", "1111"))  # 9
+# print(maximal_square("0111", "1101", "0111"))  # 1
+print(maximal_square("10110", "11101", "11110", "11110", "01011"))  # 9
